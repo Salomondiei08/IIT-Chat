@@ -22,10 +22,13 @@ class AppButton extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 20.w),
+          padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 16.w),
           child: Text(
             text,
-            style: TextStyle(fontSize: 20.sp, color: Colors.white),
+            style: TextStyle(
+                fontSize: 20.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ),

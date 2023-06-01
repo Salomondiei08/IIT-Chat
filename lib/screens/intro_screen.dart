@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iit_chat/screens/login_screen.dart';
 import '../utils/app_theme.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -68,7 +69,13 @@ class _IntroScreenState extends State<IntroScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  AppButton(text: 'Commencer')
+                  AppButton(
+                    text: 'Commencer',
+                    onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (ctx) => const LoginScreen())),
+                  )
                 ],
               ),
             ),
@@ -78,4 +85,3 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 }
-

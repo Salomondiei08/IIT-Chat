@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:iit_chat/screens/sign_up_screen.dart';
+import 'package:iit_chat/screens/add_info_screen.dart';
+import 'package:iit_chat/screens/login_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
 import '../utils/app_theme.dart';
 import '../widgets/app_button.dart';
 import '../widgets/app_text_field.dart';
-import 'add_info_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 5.h,
                 ),
                 const AppTextField(
-                  icon: Icons.mail,
-                  text: 'Email',
+                  icon: Icons.person,
+                  text: "Nom d'utilisateur",
                 ),
                 SizedBox(
                   height: 2.h,
@@ -59,26 +60,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: 'Password',
                 ),
                 SizedBox(
-                  height: 4.h,
+                  height: 2.h,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Mot de pass Oublié ?',
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.bold),
-                    )
-                  ],
+                const AppTextField(
+                  icon: Icons.security,
+                  text: 'Password',
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 Center(
                   child: AppButton(
-                    text: 'Se Connecter',
+                    text: 'Créer un compte',
                     onPressed: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -88,30 +81,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 8.h,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      'Pas encore de compte ?',
+                Center(
+                  child: Text(
+                    'Vous avez déja un compte ?',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Center(
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (ctx) => const LoginScreen())),
+                    child: Text(
+                      "Connectez vous",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 17.sp),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.sp,
+                          color: Colors.red),
                     ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (ctx) => const SignUpScreen())),
-                      child: Text(
-                        "S'inscrire",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17.sp,
-                            color: Colors.red),
-                      ),
-                    ),
-                  ],
+                  ),
                 )
               ],
             ),

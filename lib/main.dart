@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iit_chat/screens/login_screen.dart';
-import 'screens/splash_screen.dart';
+import 'package:iit_chat/screens/intro_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class IITChat extends StatelessWidget {
       return const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'IIT Chat',
-        home: LoginScreen(),
+        home: IntroScreen(),
       );
     });
   }
