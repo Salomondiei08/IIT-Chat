@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../widgets/app_button.dart';
+
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -57,27 +59,16 @@ class _IntroScreenState extends State<IntroScreen> {
                   ),
                   SizedBox(
                     height: 3.h,
-                  ), 
-                  const Text(
-                    'Conversz en tout simplicité',
-                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Text(
+                    'Conversez en tout simplicité',
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(0.7), fontSize: 17.sp),
                   ),
                   SizedBox(
-                    height: 5.h,
+                    height: 10.h,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                     boxShadow: [BoxShadow()],
-                      color: AppTheme.redColor,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 2.h, horizontal: 25.w),
-                      child: Text('Commencer'),
-                    ),
-                  )
+                  AppButton(text: 'Commencer')
                 ],
               ),
             ),
@@ -87,3 +78,4 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 }
+
