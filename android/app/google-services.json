@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "996025416782",
+    "project_id": "iit-chat",
+    "storage_bucket": "iit-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996025416782:android:cf8880acd4c54a5c05171f",
+        "android_client_info": {
+          "package_name": "com.example.iit_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996025416782-hf2clm1vmrntoimq5t0e7l19tnd8r99d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbmsSQ4Nn-eNuPkxn51WeA5UCytILyW6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996025416782-hf2clm1vmrntoimq5t0e7l19tnd8r99d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "996025416782-feke3uqf0oofdes6e3ak7ufgq4uvkpjr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iitChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
