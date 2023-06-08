@@ -25,10 +25,10 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _pages = [
-      {"page": ChatScreen()},
-      {"page": ChatScreen()},
-      {"page": ChatScreen()},
-      {"page": InfoScreen()},
+      {"page": const ChatScreen()},
+      {"page": const ChatScreen()},
+      {"page": const ChatScreen()},
+      {"page": const InfoScreen()},
     ];
     super.initState();
   }
@@ -37,19 +37,19 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: _pages[currentIndex]["page"],
       bottomNavigationBar: Container(
-        margin: EdgeInsets.all(20),
-        height: _width * .155,
+        margin: const EdgeInsets.all(20),
+        height: width * .155,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(.15),
               blurRadius: 30,
-              offset: Offset(0, 10),
+              offset: const Offset(0, 10),
             ),
           ],
           borderRadius: BorderRadius.circular(50),
@@ -57,7 +57,7 @@ class HomeScreenState extends State<HomeScreen> {
         child: ListView.builder(
           itemCount: _pages.length,
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.symmetric(horizontal: _width * .024),
+          padding: EdgeInsets.symmetric(horizontal: width * .024),
           itemBuilder: (context, index) => InkWell(
             onTap: () {
               setState(() {
@@ -70,13 +70,13 @@ class HomeScreenState extends State<HomeScreen> {
             child: Stack(
               children: [
                 SizedBox(
-                  width: _width * .2125,
+                  width: width * .2125,
                   child: Center(
                     child: AnimatedContainer(
-                      duration: Duration(seconds: 1),
+                      duration: const Duration(seconds: 1),
                       curve: Curves.fastLinearToSlowEaseIn,
-                      height: index == currentIndex ? _width * .12 : 0,
-                      width: index == currentIndex ? _width * .2125 : 0,
+                      height: index == currentIndex ? width * .12 : 0,
+                      width: index == currentIndex ? width * .2125 : 0,
                       decoration: BoxDecoration(
                         color: index == currentIndex
                             ? AppTheme.redColor.withOpacity(.2)
@@ -87,11 +87,11 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Container(
-                  width: _width * .2125,
+                  width: width * .2125,
                   alignment: Alignment.center,
                   child: Icon(
                     listOfIcons[index],
-                    size: _width * .076,
+                    size: width * .076,
                     color: index == currentIndex
                         ? AppTheme.redColor
                         : Colors.black26,

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:iit_chat/screens/home_scrren.dart';
 import '../utils/app_theme.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
-import 'intro_screen.dart';
-import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,9 +15,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(
-        const Duration(seconds: 2),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (ctx) => const LoginScreen())));
+      const Duration(seconds: 2),
+      () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => const HomeScreen(),
+        ),
+      ),
+    );
     super.initState();
   }
 

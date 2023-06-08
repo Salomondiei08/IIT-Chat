@@ -25,6 +25,7 @@ class AppButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 16.w),
           child: Text(
             text,
+            textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 20.sp,
                 color: Colors.white,

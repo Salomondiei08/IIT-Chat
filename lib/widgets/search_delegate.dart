@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearchHintDelegate extends SearchDelegate<String> {
@@ -12,7 +11,7 @@ class CustomSearchHintDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildLeading(BuildContext context) => IconButton(
-      onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back));
+      onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back));
 
   @override
   PreferredSizeWidget buildBottom(BuildContext context) {

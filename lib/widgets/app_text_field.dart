@@ -5,10 +5,18 @@ class AppTextField extends StatelessWidget {
     super.key,
     required this.text,
     required this.icon,
+    this.onPressed,
+    this.textController,
+     this.obscureTexr = false, this.validator,
   });
 
   final String text;
+  final bool obscureTexr;
+
   final IconData icon;
+  final VoidCallback? onPressed;
+  final TextEditingController? textController;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +31,9 @@ class AppTextField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
+        validator: validator,
+        obscureText: obscureTexr,
+        controller: textController,
         cursorColor: Colors.black,
         decoration: InputDecoration(
           floatingLabelStyle: const TextStyle(color: Colors.black),
@@ -35,10 +46,12 @@ class AppTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10)),
           fillColor: Colors.white,
           labelText: text,
-          suffixIcon: Icon(
-            icon,
-            color: Colors.black,
-          ),
+          suffixIcon: IconButton(
+              onPressed: onPressed,
+              icon: Icon(
+                icon,
+                color: Colors.black,
+              )),
         ),
       ),
     );

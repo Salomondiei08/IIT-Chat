@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iit_chat/screens/message_screen.dart';
 import 'package:iit_chat/utils/app_theme.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -47,10 +48,15 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Expanded(
             child: ListView(
-              children: const [
-                ChatWidget(),
-                ChatWidget(),
-                ChatWidget(),
+              children: [
+                ChatWidget(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((ctx) => const MessageScreen()))),
+                ),
+                const ChatWidget(),
+                const ChatWidget(),
               ],
             ),
           )
