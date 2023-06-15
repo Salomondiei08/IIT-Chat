@@ -1,21 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iit_chat/widgets/app_text_field.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:typewritertext/typewritertext.dart';
 
-import '../models/chat_message.dart';
+import '../providers/auth_provider.dart';
 import '../utils/app_theme.dart';
 
 class MessageScreen extends StatefulWidget {
-  const MessageScreen({super.key});
-
+  const MessageScreen(
+      {super.key,
+      required this.chatId,
+      required this.chatImageUrl,
+      required this.chatName});
+  final String chatId;
+  final String chatImageUrl;
+  final String chatName;
   @override
   State<MessageScreen> createState() => _MessageScreenState();
 }
 
 class _MessageScreenState extends State<MessageScreen> {
+  final AuthenticationProvider auth = AuthenticationProvider();
+  final user = AuthenticationProvider().firebaseAuth.currentUser;
+  final _firestore = FirebaseFirestore.instance;
+
   bool isLoading = false;
-  final List<ChatMessage> _messages = [];
+
   final TextEditingController _textController = TextEditingController();
   final _scrollController = ScrollController();
 
@@ -25,6 +36,7 @@ class _MessageScreenState extends State<MessageScreen> {
     isLoading = false;
   }
 
+  List<ChatMessageWidget> chatMessageList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,15 +45,15 @@ class _MessageScreenState extends State<MessageScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/logo.png'),
+              CircleAvatar(
+                backgroundImage: NetworkImage(widget.chatImageUrl),
                 radius: 20,
               ),
               SizedBox(
                 width: 2.w,
               ),
-              const Text(
-                'L1 Group',
+              Text(
+                widget.chatName,
               ),
             ],
           ),
@@ -51,26 +63,73 @@ class _MessageScreenState extends State<MessageScreen> {
       backgroundColor: AppTheme.grayColor,
       body: Column(
         children: [
-          Expanded(child: _buildList()),
-          // CircularProgressIndicator is bot not anwser user question
-          Visibility(
-            visible: isLoading,
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              )
-            ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _firestore
+                    .collection('chat')
+                    .doc(widget.chatId)
+                    .collection('messages')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: AppTheme.redColor,
+                      ),
+                    );
+                  } else if (!snapshot.hasData) {
+                    return Center(
+                      child: Text(
+                        'No Messages',
+                        style: TextStyle(
+                            color: AppTheme.redColor, fontSize: 16.sp),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        'An Error Occured',
+                        style: TextStyle(
+                            color: AppTheme.redColor, fontSize: 16.sp),
+                      ),
+                    );
+                  }
+
+                  final messages = snapshot.data!.docs.reversed;
+
+                  for (var message in messages) {
+                    print("messages Loaded");
+                    final messageData = message.data();
+                    final content = messageData['content'];
+                    final time = (messageData['time'] as Timestamp).toDate();
+                    final isMe = messageData['senderId'] ==
+                            AuthenticationProvider()
+                                .firebaseAuth
+                                .currentUser
+                                ?.uid
+                        ? true
+                        : false;
+
+                    final chatMessageWidgetList = ChatMessageWidget(
+                      content: content,
+                      isMe: isMe,
+                      time: time,
+                    );
+
+                    chatMessageList.add(chatMessageWidgetList);
+                    chatMessageList.sort(((a, b) => a.time.compareTo(b.time)));
+                  }
+
+                  return Column(
+                    children: [
+                      Expanded(child: ListView(children: chatMessageList)),
+                    ],
+                  );
+                }),
           ),
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Row(
-              children: [
-                // chat body
-                // l'input de saisie de l'user et le btn d'envoi
-                _buildInput(),
-              ],
-            ),
+            child: _buildInput(),
           ),
         ],
       ),
@@ -84,55 +143,27 @@ class _MessageScreenState extends State<MessageScreen> {
       text: 'Type Something',
       icon: Icons.send,
       onPressed: () {
-        setState(() {
-          _messages.add(
-              ChatMessage(content: _textController.text, isBotText: false));
-          isLoading = true;
+        _firestore
+            .collection('chat')
+            .doc(widget.chatId)
+            .collection('messages')
+            .add({
+          'content': _textController.text.trim(),
+          'senderId': user!.uid,
+          'time': Timestamp.fromDate(DateTime.now())
         });
 
-        setState(() {});
-        // on recupere la saisie de l'user au sein d'une variable et on vide le texfield
-        var input = _textController.text;
-        _textController.clear();
-        Future.delayed(const Duration(microseconds: 50))
-            .then((value) => _scrollDown());
+        setState(() {
+          _textController.clear();
+        });
 
+        // Future.delayed(const Duration(microseconds: 50))
+        //     .then((value) => _scrollDown());
+
+_scrollDown();
         //API Call
       },
     ));
-  }
-
-  Widget _buildSubmit() {
-    return Visibility(
-      visible: !isLoading,
-      child: Container(
-        color: AppTheme.redColor,
-        child: IconButton(
-          onPressed: () {
-            setState(() {
-              _messages.add(
-                  ChatMessage(content: _textController.text, isBotText: false));
-
-              isLoading = true;
-            });
-            // on recupere la saisie de l'user au sein d'une variable et on vide le texfield
-            var input = _textController.text;
-            _textController.clear();
-            Future.delayed(const Duration(microseconds: 50))
-                .then((value) => _scrollDown());
-
-            //API Call
-            _textController.clear();
-            Future.delayed(const Duration(microseconds: 50))
-                .then((value) => _scrollDown());
-          },
-          icon: const Icon(
-            Icons.send_rounded,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
   }
 
   // funtion to anime scrolling after user entry
@@ -140,37 +171,24 @@ class _MessageScreenState extends State<MessageScreen> {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
-
-  ListView _buildList() {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: _messages.length,
-      controller: _scrollController,
-      itemBuilder: ((context, index) {
-        var message = _messages[index];
-        return ChatMessageWidget(
-          content: message.content,
-          isBotText: message.isBotText,
-        );
-      }),
-    );
-  }
 }
 
 class ChatMessageWidget extends StatelessWidget {
   const ChatMessageWidget(
-      {super.key, required this.content, required this.isBotText});
+      {super.key,
+      required this.content,
+      required this.isMe,
+      required this.time});
 
   final String content;
-  final bool isBotText;
+  final bool isMe;
+  final DateTime time;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 15),
-      padding: const EdgeInsets.all(15),
-      child: isBotText == true
+      padding: const EdgeInsets.all(10),
+      child: isMe == true
           ? Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

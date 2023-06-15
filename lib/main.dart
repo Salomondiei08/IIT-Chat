@@ -7,7 +7,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+ 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -26,7 +26,6 @@ class IITChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    AuthenticationProvider().signOut();
     return ResponsiveSizer(
       builder: (context, orientation, scrennType) {
         return MaterialApp(

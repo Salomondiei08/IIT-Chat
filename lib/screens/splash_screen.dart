@@ -14,7 +14,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(
+
+   
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+       Timer(
       const Duration(seconds: 2),
       () => Navigator.pushReplacement(
         context,
@@ -23,11 +31,6 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.ligthGrayColor,
       body: Center(
