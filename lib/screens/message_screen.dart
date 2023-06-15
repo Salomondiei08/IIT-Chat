@@ -28,15 +28,13 @@ class _MessageScreenState extends State<MessageScreen> {
   bool isLoading = false;
 
   final TextEditingController _textController = TextEditingController();
-  final _scrollController = ScrollController();
+  final _scrollController = ScrollController(keepScrollOffset: true);
 
   @override
   void initState() {
     super.initState();
-    isLoading = false;
   }
 
-  List<ChatMessageWidget> chatMessageList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +93,7 @@ class _MessageScreenState extends State<MessageScreen> {
                     );
                   }
 
+                  List<ChatMessageWidget> chatMessageList = [];
                   final messages = snapshot.data!.docs.reversed;
 
                   for (var message in messages) {
@@ -110,11 +109,13 @@ class _MessageScreenState extends State<MessageScreen> {
                         ? true
                         : false;
 
+                    final senderEmail = messageData['senderEmail'] ?? '';
+
                     final chatMessageWidgetList = ChatMessageWidget(
-                      content: content,
-                      isMe: isMe,
-                      time: time,
-                    );
+                        content: content,
+                        isMe: isMe,
+                        time: time,
+                        snederEmail: senderEmail);
 
                     chatMessageList.add(chatMessageWidgetList);
                     chatMessageList.sort(((a, b) => a.time.compareTo(b.time)));
@@ -122,7 +123,10 @@ class _MessageScreenState extends State<MessageScreen> {
 
                   return Column(
                     children: [
-                      Expanded(child: ListView(children: chatMessageList)),
+                      Expanded(
+                          child: ListView(
+                              controller: _scrollController,
+                              children: chatMessageList)),
                     ],
                   );
                 }),
@@ -150,24 +154,22 @@ class _MessageScreenState extends State<MessageScreen> {
             .add({
           'content': _textController.text.trim(),
           'senderId': user!.uid,
-          'time': Timestamp.fromDate(DateTime.now())
+          'time': Timestamp.fromDate(DateTime.now()),
+          'senderEmail': user!.email
         });
 
-        setState(() {
-          _textController.clear();
-        });
+        _textController.clear();
 
-        // Future.delayed(const Duration(microseconds: 50))
-        //     .then((value) => _scrollDown());
+        Future.delayed(const Duration(microseconds: 50))
+            .then((value) => scrollDown());
 
-_scrollDown();
         //API Call
       },
     ));
   }
 
   // funtion to anime scrolling after user entry
-  void _scrollDown() {
+  void scrollDown() {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
@@ -178,116 +180,139 @@ class ChatMessageWidget extends StatelessWidget {
       {super.key,
       required this.content,
       required this.isMe,
-      required this.time});
+      required this.time,
+      required this.snederEmail});
 
   final String content;
   final bool isMe;
   final DateTime time;
+
+  final String snederEmail;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
       child: isMe == true
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Flexible(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15.0),
-                        topLeft: Radius.circular(15.0),
-                        bottomLeft: Radius.circular(15.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15.0),
+                            topLeft: Radius.circular(15.0),
+                            bottomLeft: Radius.circular(15.0),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(13),
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: TypeWriterText(
+                                maintainSize: false,
+                                text: Text(
+                                  content,
+                                ),
+                                duration: const Duration(milliseconds: 50),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(13),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                          ),
-                          child: TypeWriterText(
-                            maintainSize: false,
-                            text: Text(
-                              content,
-                            ),
-                            duration: const Duration(milliseconds: 50),
-                          ),
-                        )
-                      ],
+                    Container(
+                      width: 40,
+                      height: 40,
+                      margin: const EdgeInsets.only(left: 16),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          scale: 1.5,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  margin: const EdgeInsets.only(left: 16),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      scale: 1.5,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                Text(
+                  snederEmail,
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(0.6), fontSize: 14.sp),
                 ),
               ],
             )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.end,
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      scale: 1.5,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.redColor,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(15.0),
-                        topLeft: Radius.circular(15.0),
-                        bottomRight: Radius.circular(15.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          scale: 1.5,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(13),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8),
-                            ),
+                    Flexible(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.redColor,
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(15.0),
+                            topLeft: Radius.circular(15.0),
+                            bottomRight: Radius.circular(15.0),
                           ),
-                          child: Text(
-                            content,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        )
-                      ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(13),
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                content,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                Text(
+                  snederEmail,
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(0.6), fontSize: 14.sp),
                 ),
               ],
             ),

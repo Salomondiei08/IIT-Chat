@@ -73,6 +73,7 @@ class ChatListWidget extends StatelessWidget {
               ),
             );
           }
+          
           final chats = snapshot.data!.docs.reversed;
           List<ChatWidget> chatWidgetsList = [];
 
