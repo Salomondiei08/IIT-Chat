@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_initicon/flutter_initicon.dart';
 import 'package:iit_chat/widgets/app_text_field.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:typewritertext/typewritertext.dart';
@@ -38,6 +39,7 @@ class _MessageScreenState extends State<MessageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -239,11 +241,12 @@ class ChatMessageWidget extends StatelessWidget {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          scale: 1.5,
-                          fit: BoxFit.cover,
+                      child: SizedBox(
+                        height: 4,
+                        child: Initicon(
+                          text: snederEmail,
+                          elevation: 4,
+                          border: Border.all(color: Colors.white, width: 2),
                         ),
                       ),
                     ),
@@ -270,11 +273,13 @@ class ChatMessageWidget extends StatelessWidget {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          scale: 1.5,
-                          fit: BoxFit.cover,
+                      child: SizedBox(
+                        height: 4,
+                        child: Initicon(
+                          text: snederEmail.split('.').join(" "),
+                          elevation: 4,
+                          backgroundColor: AppTheme.redColor,
+                          border: Border.all(color: Colors.white, width: 2),
                         ),
                       ),
                     ),

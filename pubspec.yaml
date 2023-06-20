@@ -12,6 +12,7 @@ dependencies:
   firebase_core: ^2.13.1
   flutter:
     sdk: flutter
+  flutter_initicon: ^3.0.0+1
   intl: ^0.18.1
   provider: ^6.0.5
   responsive_sizer: ^3.1.1
